@@ -2,7 +2,7 @@
 
 import streamlit as st
 import vertexai
-from vertexai.generative_models import GenerativeModel
+from vertexai.generative_models import GenerativeModel, ChatSession
 import vertexai.preview.generative_models as generative_models
 
 
@@ -33,13 +33,17 @@ model = GenerativeModel(
 
 
 def main():
-  st.title(" Chatbot")
-  st.caption(" A Streamlit chatbot powered by Vertex AI")
+  st.title("Miracle Software Systems Chatbot")
+  st.caption(" Implentation for Streamlit chatbot using Vertex AI")
 
   # init sess state
   if "messages" not in st.session_state:
-    st.session_state["messages"] = [{"role": "assistant", "content": "How can I help you?"}]
+    st.session_state["messages"] = [{"role": "assistant", "content": "Ask our Miracle bot anything. except the current time !"}]
 
+  if st.button("New Chat"):
+      st.session_state["messages"] = [{"role": "assistant", "content": "Ask our Miracle bot anything. except the current time !"}]
+  
+  
   # chat
   for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
@@ -50,11 +54,17 @@ def main():
     st.chat_message("user").write(prompt)
 
     # vertex ai call 
+  
     response = model.start_chat().send_message(
         [prompt],
-        generation_config={"max_output_tokens": 8192},  # Adjust max tokens as needed
+        generation_config={"max_output_tokens": 8192}, 
         safety_settings=safety_settings
     )
+
+
+    #chat session
+
+
 
     #store history
     st.session_state.messages.append({"role": "assistant", "content": response.text})
