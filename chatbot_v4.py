@@ -36,23 +36,30 @@ model = GenerativeModel(
         Growing from the days of MRP to ERP transition and the birth of the Internet, we are now a leader in the IT world, working with the latest technologies to innovate and help businesses across the globe evolve.
         Headquartered in Novi, Michigan with over 2500 Miraclites across the globe, Miracle is a privately owned, minority-certified firm focussed on helping our customers transform digitally."""]
 )
-chat = model.start_chat()
-
 # run
+# chat = model.start_chat()
+
 def main():
     st.title("Miracle Software Systems Chatbot")
+    st.session_state.chat = model.start_chat()
 
     #session state
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
 
 
-    user_input = st.text_input("Type your message:")
+    user_input = st.text_input("Ask our Miracle bot anything. except the current time ! ")
+
+    #new chat
+    if st.button("New Chat"):
+         st.session_state.chat_history = []
+         st.session_state.chat = model.start_chat()
+    #     chat = model.start_chat()
 
     if st.button("Send"):
         if user_input:
             # call
-            response = chat.send_message(
+            response = st.session_state.chat.send_message(
                 [user_input],
                 generation_config=generation_config,
                 safety_settings=safety_settings
@@ -65,9 +72,9 @@ def main():
         #chat history display
         for message in st.session_state.chat_history:
             if message:
-                st.write("You: " + message["user"])
+                st.write("You say : " + message["user"])
             
-                st.write("Model: " + message["model"])
+                st.write("Bot says : " + message["model"])
 
 if __name__ == "__main__":
     main()
